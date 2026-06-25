@@ -130,8 +130,6 @@ def run_agent_batch(run_config: dict[str, Any], layout: RunLayout) -> dict[str, 
 
     if run_config.get("task_slice"):
         command.extend(["--slice", run_config["task_slice"]])
-    if run_config.get("cost_limit"):
-        command.extend(["--cost-limit", str(run_config["cost_limit"])])
     if run_config.get("agent_config_path"):
         command.extend(["--config", run_config["agent_config_path"]])
 

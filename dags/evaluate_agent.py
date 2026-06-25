@@ -33,7 +33,7 @@ from mlops_assignment_e2e_ml_pipeline.pipeline import (  # noqa: E402
         "model": "nebius/moonshotai/Kimi-K2.6",
         "task_slice": "0:3",
         "run_id": "",
-        "cost_limit": "0",
+        "cost_limit": "",
         "agent_config_path": "",
         "mlflow_tracking_uri": "",
         "mlflow_experiment": "coding-agent-evals",
