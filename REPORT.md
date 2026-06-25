@@ -157,8 +157,9 @@ docker build -t mlops-assignment-e2e-ml-pipeline:local .
 Then trigger `evaluate-agent-docker` with the same parameters and set
 `HOST_PROJECT_ROOT` to the absolute host path when using `docker-compose`.
 
-The Docker image build was validated locally with Python 3.12, and the container
-entrypoint was smoke-tested in sample mode for both `run-agent` and `run-eval`.
+The Docker-backed path was validated end-to-end on the VM with Docker Compose,
+Airflow, DockerOperator, the Nebius-hosted model, SWE-bench evaluation, and MLflow
+logging.
 
 ## Completed Runs
 
@@ -208,6 +209,41 @@ The resulting artifact folder is:
 
 - `runs/airflow-real-2/`
 
+### Real Docker-backed Airflow run
+
+The production-style Docker Compose and DockerOperator path was executed
+successfully end-to-end on the VM with:
+
+- run id: `docker-airflow-real-1`
+- dataset: `princeton-nlp/SWE-bench_Verified`
+- split: `test`
+- task slice: `0:1`
+- workers: `1`
+- eval workers: `1`
+- model: `nebius/moonshotai/Kimi-K2.6`
+- sample mode: `false`
+
+Result from `runs/docker-airflow-real-1/metrics.json`:
+
+- `submitted_instances = 1`
+- `completed_instances = 1`
+- `resolved_instances = 1`
+- `unresolved_instances = 0`
+- `empty_patch_instances = 0`
+- `patch_apply_failures = 0`
+- `total_api_calls = 30`
+- `resolution_rate = 1.0`
+- resolved instance: `astropy__astropy-12907`
+
+The resulting artifact folder is:
+
+- `runs/docker-airflow-real-1/`
+
+This run is the primary evidence for the final submission because it covers the
+real model call, SWE-bench evaluation, Airflow orchestration, DockerOperator
+isolation, Docker Compose deployment, MLflow logging, and the reproducible run
+artifact layout.
+
 ### Docker-backed smoke validation
 
 The production-style image and container entrypoint were validated locally in sample
@@ -222,20 +258,26 @@ Result:
 
 ## MLflow Evidence
 
-MLflow logging succeeded during the real VM pipeline run.
+MLflow logging succeeded during the real Docker-backed Airflow run.
 
 - experiment: `coding-agent-evals`
-- MLflow run id: `307019d1a49246a4bb261df11cb2ab11`
-- tracking URI used during execution on the VM: `file:///home/ofergr/mlops-assignment-e2e-ml-pipeline/mlruns`
+- run name: `docker-airflow-real-1`
+- MLflow run id: `0f1541b7862b442fadc0db93c76fe2b8`
+- tracking URI used by Airflow in Docker Compose: `file:///opt/airflow/project/mlruns`
 
-The MLflow store was VM-local runtime state and is intentionally excluded from git.
+The MLflow store was VM-local runtime state and is intentionally excluded from git,
+but `screenshots/mlflow_runs.png` shows the logged params and metrics for the
+completed Docker-backed run.
 
 ## Screenshots
 
 Saved evidence in the repository:
 
 - `screenshots/airflow_dag.png`: successful Airflow DAG run
-- `screenshots/airflow_real_2_metrics.png`: terminal evidence for `runs/airflow-real-2/metrics.json`
+- `screenshots/docker_run.png`: Docker-backed Airflow run evidence
+- `screenshots/mlflow_runs.png`: MLflow UI evidence for `docker-airflow-real-1`
+- `screenshots/airflow_real_2_metrics.png`: terminal evidence for the earlier
+  standalone Airflow real run
 
 ## Rerun Instructions
 
@@ -243,8 +285,16 @@ Saved evidence in the repository:
 2. Clone the repository and create `.env` from `.env.example`.
 3. Set `NEBIUS_API_KEY` in `.env`.
 4. Install dependencies with `uv sync` or `pip install -e .`.
-5. Start Airflow with `bash run-airflow-standalone.sh`.
-6. Trigger `evaluate-agent` with a small real config such as `task_slice = 0:1`.
+5. For the standalone path, start Airflow with `bash run-airflow-standalone.sh`.
+6. For the Docker-backed path, build the project image and start Compose:
+
+```bash
+docker build -t mlops-assignment-e2e-ml-pipeline:local .
+docker compose up --build
+```
+
+7. Trigger `evaluate-agent-docker` with a small real config such as
+   `task_slice = 0:1`.
 
 To rerun a completed experiment shape, trigger the DAG again with the same parameter
 set and either:
@@ -254,7 +304,7 @@ set and either:
 - provide a new `run_id` to create a fresh reproducible artifact folder while keeping
   the previous run untouched
 
-For example, `airflow-real-2` can be rerun by reusing the same config:
+For example, `docker-airflow-real-1` can be rerun by reusing the same config:
 
 ```json
 {
@@ -264,12 +314,13 @@ For example, `airflow-real-2` can be rerun by reusing the same config:
   "eval_max_workers": 1,
   "model": "nebius/moonshotai/Kimi-K2.6",
   "task_slice": "0:1",
-  "run_id": "airflow-real-2"
+  "run_id": "docker-airflow-real-1",
+  "use_sample": false
 }
 ```
 
-In practice, using a new run id such as `airflow-real-3` is safer for repeatability
-because it preserves the original artifact directory for comparison.
+In practice, using a new run id such as `docker-airflow-real-2` is safer for
+repeatability because it preserves the original artifact directory for comparison.
 
 ## Notes
 
@@ -278,9 +329,8 @@ because it preserves the original artifact directory for comparison.
   - `dags/evaluate_agent_docker.py`
   - `docker-compose.yaml`
 - The standalone DAG path (`evaluate-agent`) was validated end-to-end on the VM.
-- The Docker-backed DAG was added as the production-style path; its image and
-  container entrypoint were smoke-tested locally in sample mode.
-- `docker-compose.yaml` was added and its rendered configuration was validated with
-  `docker compose config`.
+- The Docker-backed DAG (`evaluate-agent-docker`) was validated end-to-end on the
+  VM with `docker-airflow-real-1`.
+- `docker-compose.yaml` deploys Airflow and MLflow for the VM workflow.
 - Remote object storage / S3 artifact upload is not implemented.
 - MLflow logging is implemented with a local file-backed store for development use.
