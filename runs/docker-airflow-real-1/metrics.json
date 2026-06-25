@@ -1,0 +1,21 @@
+{
+  "completed_instances": 1,
+  "empty_patch_instances": 0,
+  "error_instances": 0,
+  "evaluation_report_count": 1,
+  "patch_apply_failure_ids": [],
+  "patch_apply_failures": 0,
+  "resolution_rate": 1.0,
+  "resolved_ids": [
+    "astropy__astropy-12907"
+  ],
+  "resolved_instances": 1,
+  "run_id": "docker-airflow-real-1",
+  "submitted_instances": 1,
+  "total_api_calls": 30,
+  "total_instance_cost": 0.0,
+  "total_instances": 500,
+  "trajectory_count": 1,
+  "unresolved_ids": [],
+  "unresolved_instances": 0
+}

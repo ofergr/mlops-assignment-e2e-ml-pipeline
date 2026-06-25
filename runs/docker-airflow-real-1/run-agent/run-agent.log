@@ -1,0 +1,29 @@
+👋 This is mini-swe-agent version 2.4.1.
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration
+Loading global config from '/root/.config/mini-swe-agent/.env'
+minisweagent: INFO: Results will be saved to trajectories                       
+Logging to 'trajectories/minisweagent.log'
+minisweagent: INFO: Loading dataset princeton-nlp/SWE-Bench_Verified, split     
+test...                                                                         
+minisweagent: INFO: Instance slice: 500 -> 1 instances                          
+minisweagent: INFO: Running on 1 instances...                                   
+minisweagent: INFO: Building agent config from specs:                           
+['/mlops-assignment/.venv/lib/python3.12/site-packages/minisweagent/config/bench
+marks/swebench.yaml']                                                           
+minisweagent.environment: DEBUG: Starting container with command: docker run -d 
+--name minisweagent-d2e2212e -w /testbed --rm                                   
+docker.io/swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest sleep 2h  
+minisweagent.environment: INFO: Started container minisweagent-d2e2212e with ID 
+0e7e375fc8dc98a59a901db5d4203390cefa01bf9dd276f75f3049d1444824c3                
+minisweagent: INFO: Saved trajectory to                                         
+'trajectories/astropy__astropy-12907/astropy__astropy-12907.traj.json'          
+  Overall Progress ($0.00) ━━━━━━━━━━━━━━━━━━━━━━━ 1/1 100% 0:02:59 eta: 0:00:00
+┏━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Exit Status ┃ Count ┃ Most recent instances                                  ┃
+┡━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Submitted   │     1 │ astropy__astropy-12907                                 │
+└─────────────┴───────┴────────────────────────────────────────────────────────┘
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+Generating test split:   0%|          | 0/500 [00:00<?, ? examples/s]
+Generating test split: 100%|██████████| 500/500 [00:00<00:00, 22961.85 examples/s]
