@@ -26,6 +26,7 @@ services:
     command: >
       bash -lc
       "echo '{\"admin\": \"admin\"}' > /opt/airflow/simple_auth_manager_passwords.json.generated
+      && export PATH=/home/airflow/.local/bin:$$PATH
       && airflow standalone"
     depends_on:
       - mlflow
