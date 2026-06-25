@@ -159,7 +159,7 @@ def run_swebench_eval(run_config: dict[str, Any], preds_path: Path, layout: RunL
         return _materialize_sample_eval_run(run_config, layout)
 
     command = [
-        sys.executable,
+        _resolve_python_executable(),
         "-m",
         "swebench.harness.run_evaluation",
         "--dataset_name",
@@ -421,6 +421,13 @@ def _resolve_executable(name: str) -> str:
     if local_candidate.exists():
         return str(local_candidate)
     raise PipelineError(f"Could not find executable '{name}'. Install project dependencies first.")
+
+
+def _resolve_python_executable() -> str:
+    local_python = PROJECT_ROOT / ".venv" / "bin" / "python"
+    if local_python.exists():
+        return str(local_python)
+    return sys.executable
 
 
 def _replace_dir(source: Path, destination: Path) -> None:
