@@ -14,7 +14,8 @@ services:
       PYTHONPATH: /opt/airflow/project/src
       NEBIUS_API_KEY: ${NEBIUS_API_KEY}
       HF_TOKEN: ${HF_TOKEN:-}
-      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_ALLOW_FILE_STORE: "true"
+      MLFLOW_TRACKING_URI: file:///opt/airflow/project/mlruns
       PIPELINE_DOCKER_IMAGE: ${PIPELINE_DOCKER_IMAGE:-mlops-assignment-e2e-ml-pipeline:local}
       HOST_PROJECT_ROOT: ${HOST_PROJECT_ROOT}
     volumes:
