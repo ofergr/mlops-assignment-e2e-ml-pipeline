@@ -5,6 +5,7 @@
 The assignment is implemented as an offline-first Airflow pipeline centered around:
 
 - `dags/evaluate_agent.py`
+- `dags/evaluate_agent_docker.py`
 - `src/mlops_assignment_e2e_ml_pipeline/pipeline.py`
 
 The DAG contains four explicit stages:
@@ -24,6 +25,13 @@ logic directly inside the DAG. That wrapper layer is responsible for:
 - collecting metrics
 - generating a manifest
 - logging params and metrics to MLflow
+
+The repository now includes two orchestration paths:
+
+- `evaluate-agent`: the standalone Python/subprocess path that was validated end-to-end
+  on the VM
+- `evaluate-agent-docker`: a production-style DAG that uses `DockerOperator` for the
+  agent and evaluation stages
 
 ## Run Artifact Layout
 
@@ -140,6 +148,15 @@ For an offline smoke test:
 }
 ```
 
+For the Docker-backed DAG, build the image first:
+
+```bash
+docker build -t mlops-assignment-e2e-ml-pipeline:local .
+```
+
+Then trigger `evaluate-agent-docker` with the same parameters and set
+`HOST_PROJECT_ROOT` to the absolute host path when using `docker-compose`.
+
 ## Completed Runs
 
 ### Offline smoke test
@@ -241,8 +258,12 @@ because it preserves the original artifact directory for comparison.
 
 ## Notes
 
-- This submission implements the minimum working pipeline.
-- `DockerOperator` usage in the DAG is not implemented.
-- `docker-compose.yaml` for Airflow and MLflow deployment is not implemented.
+- This submission implements the minimum working pipeline and also includes
+  production-style additions in code:
+  - `dags/evaluate_agent_docker.py`
+  - `docker-compose.yaml`
+- The standalone DAG path (`evaluate-agent`) was validated end-to-end on the VM.
+- The Docker-backed DAG and compose deployment were added as the production-style path,
+  but were not the primary execution path used for the successful proof run in this session.
 - Remote object storage / S3 artifact upload is not implemented.
 - MLflow logging is implemented with a local file-backed store for development use.

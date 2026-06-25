@@ -10,7 +10,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(
+    os.getenv("PIPELINE_PROJECT_ROOT", Path(__file__).resolve().parents[2])
+).resolve()
 RUNS_ROOT = PROJECT_ROOT / "runs"
 DEFAULT_MODEL = "nebius/moonshotai/Kimi-K2.6"
 DEFAULT_EXPERIMENT = "coding-agent-evals"
@@ -357,6 +359,26 @@ def summarize_and_log(run_config: dict[str, Any], layout: RunLayout, agent_resul
     }
     write_json(layout.run_dir / "summary.json", result)
     return result
+
+
+def build_agent_stage_result(layout: RunLayout, used_sample: bool = False) -> dict[str, Any]:
+    return {
+        "predictions_path": str(layout.preds_path),
+        "trajectories_dir": str(layout.trajectories_dir),
+        "agent_log_path": str(layout.agent_dir / "run-agent.log"),
+        "used_sample": used_sample,
+    }
+
+
+def build_eval_stage_result(layout: RunLayout, run_config: dict[str, Any], used_sample: bool = False) -> dict[str, Any]:
+    report_paths = sorted(str(path) for path in layout.eval_reports_dir.glob("*.json"))
+    return {
+        "eval_log_path": str(layout.eval_dir / "run-eval.log"),
+        "eval_logs_dir": str(layout.eval_logs_dir),
+        "report_paths": report_paths,
+        "run_id": run_config["run_id"],
+        "used_sample": used_sample,
+    }
 
 
 def _materialize_sample_agent_run(layout: RunLayout) -> dict[str, Any]:

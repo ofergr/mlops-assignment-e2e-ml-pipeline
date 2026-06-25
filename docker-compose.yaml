@@ -1,0 +1,52 @@
+services:
+  airflow:
+    image: apache/airflow:3.0.2-python3.12
+    container_name: mlops-assignment-airflow
+    restart: unless-stopped
+    environment:
+      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/project/dags
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      PYTHONPATH: /opt/airflow/project/src
+      NEBIUS_API_KEY: ${NEBIUS_API_KEY}
+      HF_TOKEN: ${HF_TOKEN:-}
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      PIPELINE_DOCKER_IMAGE: ${PIPELINE_DOCKER_IMAGE:-mlops-assignment-e2e-ml-pipeline:local}
+      HOST_PROJECT_ROOT: ${HOST_PROJECT_ROOT}
+      _PIP_ADDITIONAL_REQUIREMENTS: >-
+        apache-airflow-providers-docker
+        docker
+        mlflow
+        mini-swe-agent
+        swebench
+    volumes:
+      - .:/opt/airflow/project
+      - airflow_home:/opt/airflow
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    command: >
+      bash -lc
+      "echo '{\"admin\": \"admin\"}' > /opt/airflow/simple_auth_manager_passwords.json.generated
+      && airflow standalone"
+    depends_on:
+      - mlflow
+
+  mlflow:
+    image: python:3.12-slim
+    container_name: mlops-assignment-mlflow
+    restart: unless-stopped
+    environment:
+      MLFLOW_ALLOW_FILE_STORE: "true"
+    working_dir: /mlflow/project
+    volumes:
+      - .:/mlflow/project
+    ports:
+      - "5000:5000"
+    command: >
+      bash -lc
+      "pip install --no-cache-dir mlflow
+      && mlflow ui --backend-store-uri file:///mlflow/project/mlruns --host 0.0.0.0 --port 5000"
+
+volumes:
+  airflow_home:
