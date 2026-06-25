@@ -2,15 +2,30 @@
 
 ## Architecture
 
-The repository now includes an offline-first pipeline implementation centered around
-`dags/evaluate_agent.py` and `src/mlops_assignment_e2e_ml_pipeline/pipeline.py`.
+The assignment is implemented as an offline-first Airflow pipeline centered around:
 
-The DAG implements four explicit stages:
+- `dags/evaluate_agent.py`
+- `src/mlops_assignment_e2e_ml_pipeline/pipeline.py`
+
+The DAG contains four explicit stages:
 
 1. `prepare_run`
 2. `run_agent`
 3. `run_eval`
 4. `summarize`
+
+The implementation uses wrapper code in `src/` instead of putting all orchestration
+logic directly inside the DAG. That wrapper layer is responsible for:
+
+- building the run configuration from Airflow params
+- creating a durable `runs/<run-id>/` folder
+- executing `mini-swe-agent`
+- executing SWE-bench evaluation
+- collecting metrics
+- generating a manifest
+- logging params and metrics to MLflow
+
+## Run Artifact Layout
 
 Each run writes a durable artifact tree under `runs/<run-id>/`:
 
@@ -30,13 +45,19 @@ runs/<run-id>/
     reports/
 ```
 
-`config.json` records the exact inputs. `metrics.json` contains the parsed evaluation
-results and aggregate trajectory stats. `manifest.json` points to the important files
-and captures the local artifact URI plus the current git commit if available.
+Important files:
+
+- `config.json`: exact run inputs
+- `run-agent/preds.json`: predictions used by SWE-bench evaluation
+- `run-agent/trajectories/`: mini-swe-agent trajectories
+- `run-eval/logs/`: evaluation logs
+- `run-eval/reports/`: evaluation summary JSON
+- `metrics.json`: parsed aggregate metrics for the run
+- `manifest.json`: paths, stage outputs, local artifact URI, and git commit
 
 ## DAG Parameters
 
-The DAG is configurable through Airflow params or `dag_run.conf`.
+The DAG is configurable via Airflow params or `dag_run.conf`.
 
 Required:
 
@@ -56,8 +77,7 @@ Useful optional params:
 - `eval_max_workers`
 - `use_sample`
 
-`use_sample=true` is an offline smoke-test mode that materializes the provided sample
-artifacts into a run folder without calling Nebius, mini-swe-agent, or SWE-bench.
+`use_sample=true` provides an offline smoke-test mode using the provided sample artifacts.
 
 ## Local Setup
 
@@ -74,21 +94,39 @@ Install dependencies:
 pip install -e .
 ```
 
-If you want local MLflow tracking without a remote server, set:
+Optional local MLflow tracking:
 
 ```bash
 export MLFLOW_TRACKING_URI="file://$(pwd)/mlruns"
 ```
 
+`mlruns/` is a local runtime-generated MLflow store. It is created when MLflow logging
+is used and is intentionally not committed to git.
+
 ## How To Trigger The DAG
 
-Standalone Airflow:
+Start standalone Airflow:
 
 ```bash
 bash run-airflow-standalone.sh
 ```
 
-Then trigger `evaluate-agent` with params such as:
+Then trigger `evaluate-agent` from the Airflow UI with params such as:
+
+```json
+{
+  "split": "test",
+  "subset": "verified",
+  "workers": 1,
+  "eval_max_workers": 1,
+  "model": "nebius/moonshotai/Kimi-K2.6",
+  "task_slice": "0:1",
+  "run_id": "airflow-real-2",
+  "use_sample": false
+}
+```
+
+For an offline smoke test:
 
 ```json
 {
@@ -102,20 +140,109 @@ Then trigger `evaluate-agent` with params such as:
 }
 ```
 
-For a real run, switch `use_sample` to `false`, provide `NEBIUS_API_KEY`, and make sure
-the runtime has Docker plus the required upstream tooling installed.
+## Completed Runs
 
-## Offline Work Completed
+### Offline smoke test
 
-- Added a proper `src/` Python package so the project can be installed locally.
-- Added an offline-first Airflow DAG for the full `run-agent -> run-eval -> summarize` flow.
-- Added durable run-folder creation, metrics extraction, manifest generation, and MLflow logging.
-- Added a sample-backed smoke-test mode for local validation before Nebius deployment.
+The sample-backed offline run succeeded locally and produced a reproducible run folder
+without calling Nebius or SWE-bench live services.
 
-## Nebius / VM Work Remaining
+### Real VM pipeline run
 
-- Install Docker, Airflow runtime tooling, and the project dependencies on the VM.
-- Add `NEBIUS_API_KEY` to `.env`.
-- Run a real `mini-swe-agent` batch against Nebius-backed inference.
-- Run SWE-bench evaluation in the target environment.
-- Optionally add object storage upload and a `docker-compose` deployment for Airflow + MLflow.
+A real VM-backed pipeline run was executed successfully with:
+
+- dataset: `princeton-nlp/SWE-bench_Verified`
+- split: `test`
+- task slice: `0:1`
+- workers: `1`
+- eval workers: `1`
+- model: `nebius/moonshotai/Kimi-K2.6`
+- run id: `vm-real-pipeline-1`
+
+Result:
+
+- `submitted_instances = 1`
+- `completed_instances = 1`
+- `resolved_instances = 1`
+- `resolution_rate = 1.0`
+
+### Real Airflow DAG run
+
+The Airflow DAG was also executed successfully end-to-end on the VM with:
+
+- run id: `airflow-real-2`
+- dataset: `princeton-nlp/SWE-bench_Verified`
+- split: `test`
+- task slice: `0:1`
+- model: `nebius/moonshotai/Kimi-K2.6`
+
+Result from `runs/airflow-real-2/metrics.json`:
+
+- `submitted_instances = 1`
+- `completed_instances = 1`
+- `resolved_instances = 1`
+- `unresolved_instances = 0`
+- `resolution_rate = 1.0`
+
+The resulting artifact folder is:
+
+- `runs/airflow-real-2/`
+
+## MLflow Evidence
+
+MLflow logging succeeded during the real VM pipeline run.
+
+- experiment: `coding-agent-evals`
+- MLflow run id: `307019d1a49246a4bb261df11cb2ab11`
+- tracking URI used during execution on the VM: `file:///home/ofergr/mlops-assignment-e2e-ml-pipeline/mlruns`
+
+The MLflow store was VM-local runtime state and is intentionally excluded from git.
+
+## Screenshots
+
+Saved evidence in the repository:
+
+- `screenshots/airflow_dag.png`: successful Airflow DAG run
+- `screenshots/airflow_real_2_metrics.png`: terminal evidence for `runs/airflow-real-2/metrics.json`
+
+## Rerun Instructions
+
+1. Provision a CPU VM with Docker and Python 3.12 tooling.
+2. Clone the repository and create `.env` from `.env.example`.
+3. Set `NEBIUS_API_KEY` in `.env`.
+4. Install dependencies with `uv sync` or `pip install -e .`.
+5. Start Airflow with `bash run-airflow-standalone.sh`.
+6. Trigger `evaluate-agent` with a small real config such as `task_slice = 0:1`.
+
+To rerun a completed experiment shape, trigger the DAG again with the same parameter
+set and either:
+
+- reuse the previous `run_id` only if you intentionally want to write back into the
+  same `runs/<run-id>/` folder, or
+- provide a new `run_id` to create a fresh reproducible artifact folder while keeping
+  the previous run untouched
+
+For example, `airflow-real-2` can be rerun by reusing the same config:
+
+```json
+{
+  "split": "test",
+  "subset": "verified",
+  "workers": 1,
+  "eval_max_workers": 1,
+  "model": "nebius/moonshotai/Kimi-K2.6",
+  "task_slice": "0:1",
+  "run_id": "airflow-real-2"
+}
+```
+
+In practice, using a new run id such as `airflow-real-3` is safer for repeatability
+because it preserves the original artifact directory for comparison.
+
+## Notes
+
+- This submission implements the minimum working pipeline.
+- `DockerOperator` usage in the DAG is not implemented.
+- `docker-compose.yaml` for Airflow and MLflow deployment is not implemented.
+- Remote object storage / S3 artifact upload is not implemented.
+- MLflow logging is implemented with a local file-backed store for development use.
