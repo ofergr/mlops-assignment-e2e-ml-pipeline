@@ -101,7 +101,7 @@ def evaluate_agent_docker():
         image=_docker_image(),
         command=(
             "python -m mlops_assignment_e2e_ml_pipeline.container_entrypoint "
-            "run-agent --workspace /workspace "
+            "--workspace /workspace run-agent "
             "--run-id '{{ ti.xcom_pull(task_ids=\"prepare_run\")[\"run_config\"][\"run_id\"] }}'"
         ),
         mounts=mounts,
@@ -117,7 +117,7 @@ def evaluate_agent_docker():
         image=_docker_image(),
         command=(
             "python -m mlops_assignment_e2e_ml_pipeline.container_entrypoint "
-            "run-eval --workspace /workspace "
+            "--workspace /workspace run-eval "
             "--run-id '{{ ti.xcom_pull(task_ids=\"prepare_run\")[\"run_config\"][\"run_id\"] }}'"
         ),
         mounts=mounts,

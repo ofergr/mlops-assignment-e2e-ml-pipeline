@@ -19,7 +19,9 @@ COPY scripts scripts/
 COPY sample sample/
 COPY .env.example .
 
-RUN uv sync --locked
+ENV UV_PYTHON=3.12
+
+RUN uv sync
 
 ENV PATH="/mlops-assignment/.venv/bin:$PATH"
 

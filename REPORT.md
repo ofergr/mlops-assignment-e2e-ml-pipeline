@@ -157,6 +157,9 @@ docker build -t mlops-assignment-e2e-ml-pipeline:local .
 Then trigger `evaluate-agent-docker` with the same parameters and set
 `HOST_PROJECT_ROOT` to the absolute host path when using `docker-compose`.
 
+The Docker image build was validated locally with Python 3.12, and the container
+entrypoint was smoke-tested in sample mode for both `run-agent` and `run-eval`.
+
 ## Completed Runs
 
 ### Offline smoke test
@@ -204,6 +207,18 @@ Result from `runs/airflow-real-2/metrics.json`:
 The resulting artifact folder is:
 
 - `runs/airflow-real-2/`
+
+### Docker-backed smoke validation
+
+The production-style image and container entrypoint were validated locally in sample
+mode with run id `docker-validation-sample`.
+
+Result:
+
+- Docker image built successfully as `mlops-assignment-e2e-ml-pipeline:local`
+- containerized `run-agent` completed
+- containerized `run-eval` completed
+- summary/metrics generation completed with `resolved_instances = 1`
 
 ## MLflow Evidence
 
@@ -263,7 +278,9 @@ because it preserves the original artifact directory for comparison.
   - `dags/evaluate_agent_docker.py`
   - `docker-compose.yaml`
 - The standalone DAG path (`evaluate-agent`) was validated end-to-end on the VM.
-- The Docker-backed DAG and compose deployment were added as the production-style path,
-  but were not the primary execution path used for the successful proof run in this session.
+- The Docker-backed DAG was added as the production-style path; its image and
+  container entrypoint were smoke-tested locally in sample mode.
+- `docker-compose.yaml` was added and its rendered configuration was validated with
+  `docker compose config`.
 - Remote object storage / S3 artifact upload is not implemented.
 - MLflow logging is implemented with a local file-backed store for development use.

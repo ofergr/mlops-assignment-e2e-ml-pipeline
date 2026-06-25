@@ -5,14 +5,6 @@ import json
 import os
 from pathlib import Path
 
-from mlops_assignment_e2e_ml_pipeline.pipeline import (
-    build_agent_stage_result,
-    build_eval_stage_result,
-    prepare_run_dir,
-    run_agent_batch,
-    run_swebench_eval,
-)
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Container entrypoint for pipeline stages")
@@ -30,6 +22,12 @@ def main() -> None:
 
     workspace = Path(args.workspace).resolve()
     os.environ["PIPELINE_PROJECT_ROOT"] = str(workspace)
+
+    from mlops_assignment_e2e_ml_pipeline.pipeline import (
+        prepare_run_dir,
+        run_agent_batch,
+        run_swebench_eval,
+    )
 
     config_path = workspace / "runs" / args.run_id / "config.json"
     run_config = json.loads(config_path.read_text())
