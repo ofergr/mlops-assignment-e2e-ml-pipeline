@@ -1,13 +1,24 @@
 [project]
 name = "mlops-assignment-e2e-ml-pipeline"
 version = "0.1.0"
-description = "Add your description here"
+description = "Offline-first Airflow pipeline for coding-agent evaluation experiments"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "mini-swe-agent>=2.4.1",
+    "mlflow>=3.1.4",
     "swebench>=4.1.0",
 ]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [dependency-groups]
 dev = [

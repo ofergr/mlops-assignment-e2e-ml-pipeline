@@ -1,0 +1,9 @@
+README.md
+pyproject.toml
+src/mlops_assignment_e2e_ml_pipeline/__init__.py
+src/mlops_assignment_e2e_ml_pipeline/pipeline.py
+src/mlops_assignment_e2e_ml_pipeline.egg-info/PKG-INFO
+src/mlops_assignment_e2e_ml_pipeline.egg-info/SOURCES.txt
+src/mlops_assignment_e2e_ml_pipeline.egg-info/dependency_links.txt
+src/mlops_assignment_e2e_ml_pipeline.egg-info/requires.txt
+src/mlops_assignment_e2e_ml_pipeline.egg-info/top_level.txt
