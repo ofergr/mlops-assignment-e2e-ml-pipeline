@@ -2,6 +2,7 @@ services:
   airflow:
     image: apache/airflow:3.0.2-python3.12
     container_name: mlops-assignment-airflow
+    user: "0:0"
     restart: unless-stopped
     environment:
       AIRFLOW_HOME: /opt/airflow
