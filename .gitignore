@@ -12,3 +12,6 @@ __pycache__
 
 mini-swe-agent/
 SWE-bench/
+runs/offline-check/
+runs/offline-sample-mlflow/
+runs/offline-sample/
