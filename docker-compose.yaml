@@ -45,7 +45,7 @@ services:
       - "5000:5000"
     command: >
       bash -lc
-      "pip install --no-cache-dir mlflow
+      "pip install --no-cache-dir 'mlflow<3'
       && mlflow ui --backend-store-uri file:///mlflow/project/mlruns --host 0.0.0.0 --port 5000"
 
 volumes:
