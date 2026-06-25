@@ -1,0 +1,60 @@
+{
+  "artifacts": {
+    "eval_logs_dir": "runs/vm-real-pipeline-1/run-eval/logs",
+    "eval_reports_dir": "runs/vm-real-pipeline-1/run-eval/reports",
+    "metrics_path": "runs/vm-real-pipeline-1/metrics.json",
+    "predictions_path": "runs/vm-real-pipeline-1/run-agent/preds.json",
+    "run_dir": "runs/vm-real-pipeline-1",
+    "trajectories_dir": "runs/vm-real-pipeline-1/run-agent/trajectories"
+  },
+  "config": {
+    "path": "runs/vm-real-pipeline-1/config.json",
+    "values": {
+      "agent_config_path": null,
+      "artifact_root": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs",
+      "cost_limit": null,
+      "created_at_utc": "2026-06-25T16:34:37.175146+00:00",
+      "dataset_name": "princeton-nlp/SWE-bench_Verified",
+      "eval_max_workers": 1,
+      "mlflow_experiment": "coding-agent-evals",
+      "mlflow_tracking_uri": "file:///home/ofergr/mlops-assignment-e2e-ml-pipeline/mlruns",
+      "model": "nebius/moonshotai/Kimi-K2.6",
+      "run_id": "vm-real-pipeline-1",
+      "split": "test",
+      "subset": "verified",
+      "task_slice": "0:1",
+      "use_sample": false,
+      "workers": 1
+    }
+  },
+  "generated_at_utc": "2026-06-25T16:38:05.184856+00:00",
+  "git_commit": "64f96cc4ba5adb4bee2cf2c222f524ee0e127e7c",
+  "run_id": "vm-real-pipeline-1",
+  "stage_outputs": {
+    "run_agent": {
+      "agent_log_path": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/vm-real-pipeline-1/run-agent/run-agent.log",
+      "predictions_path": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/vm-real-pipeline-1/run-agent/preds.json",
+      "trajectories_dir": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/vm-real-pipeline-1/run-agent/trajectories",
+      "used_sample": false
+    },
+    "run_eval": {
+      "eval_log_path": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/vm-real-pipeline-1/run-eval/run-eval.log",
+      "eval_logs_dir": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/vm-real-pipeline-1/run-eval/logs",
+      "report_paths": [
+        "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/vm-real-pipeline-1/run-eval/reports/nebius__moonshotai__Kimi-K2.6.vm-real-pipeline-1.json"
+      ],
+      "used_sample": false
+    }
+  },
+  "storage": {
+    "local_artifact_uri": "file:///home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/vm-real-pipeline-1",
+    "remote_artifact_uri": null
+  },
+  "summary": {
+    "resolution_rate": 1.0,
+    "resolved_instances": 1,
+    "submitted_instances": 1,
+    "total_api_calls": 22,
+    "total_instance_cost": 0.0
+  }
+}

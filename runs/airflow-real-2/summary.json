@@ -1,0 +1,91 @@
+{
+  "manifest": {
+    "artifacts": {
+      "eval_logs_dir": "runs/airflow-real-2/run-eval/logs",
+      "eval_reports_dir": "runs/airflow-real-2/run-eval/reports",
+      "metrics_path": "runs/airflow-real-2/metrics.json",
+      "predictions_path": "runs/airflow-real-2/run-agent/preds.json",
+      "run_dir": "runs/airflow-real-2",
+      "trajectories_dir": "runs/airflow-real-2/run-agent/trajectories"
+    },
+    "config": {
+      "path": "runs/airflow-real-2/config.json",
+      "values": {
+        "agent_config_path": null,
+        "artifact_root": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs",
+        "cost_limit": null,
+        "created_at_utc": "2026-06-25T17:10:43.392683+00:00",
+        "dataset_name": "princeton-nlp/SWE-bench_Verified",
+        "eval_max_workers": 1,
+        "mlflow_experiment": "coding-agent-evals",
+        "mlflow_tracking_uri": null,
+        "model": "nebius/moonshotai/Kimi-K2.6",
+        "run_id": "airflow-real-2",
+        "split": "test",
+        "subset": "verified",
+        "task_slice": "0:1",
+        "use_sample": false,
+        "workers": 1
+      }
+    },
+    "generated_at_utc": "2026-06-25T17:14:48.621760+00:00",
+    "git_commit": "bf66d1ca0762a07217040ab1d6f8d4c43d019888",
+    "run_id": "airflow-real-2",
+    "stage_outputs": {
+      "run_agent": {
+        "agent_log_path": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2/run-agent/run-agent.log",
+        "predictions_path": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2/run-agent/preds.json",
+        "trajectories_dir": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2/run-agent/trajectories",
+        "used_sample": false
+      },
+      "run_eval": {
+        "eval_log_path": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2/run-eval/run-eval.log",
+        "eval_logs_dir": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2/run-eval/logs",
+        "report_paths": [
+          "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2/run-eval/reports/nebius__moonshotai__Kimi-K2.6.airflow-real-2.json"
+        ],
+        "used_sample": false
+      }
+    },
+    "storage": {
+      "local_artifact_uri": "file:///home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2",
+      "remote_artifact_uri": null
+    },
+    "summary": {
+      "resolution_rate": 1.0,
+      "resolved_instances": 1,
+      "submitted_instances": 1,
+      "total_api_calls": 20,
+      "total_instance_cost": 0.0
+    }
+  },
+  "manifest_path": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2/manifest.json",
+  "metrics": {
+    "completed_instances": 1,
+    "empty_patch_instances": 0,
+    "error_instances": 0,
+    "evaluation_report_count": 1,
+    "patch_apply_failure_ids": [],
+    "patch_apply_failures": 0,
+    "resolution_rate": 1.0,
+    "resolved_ids": [
+      "astropy__astropy-12907"
+    ],
+    "resolved_instances": 1,
+    "run_id": "airflow-real-2",
+    "submitted_instances": 1,
+    "total_api_calls": 20,
+    "total_instance_cost": 0.0,
+    "total_instances": 500,
+    "trajectory_count": 1,
+    "unresolved_ids": [],
+    "unresolved_instances": 0
+  },
+  "mlflow": {
+    "reason": "mlflow import failed: No module named 'mlflow'",
+    "status": "skipped",
+    "tracking_uri": "file:///home/ofergr/mlops-assignment-e2e-ml-pipeline/mlruns"
+  },
+  "run_dir": "/home/ofergr/mlops-assignment-e2e-ml-pipeline/runs/airflow-real-2",
+  "run_id": "airflow-real-2"
+}

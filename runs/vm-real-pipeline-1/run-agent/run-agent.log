@@ -1,0 +1,21 @@
+👋 This is mini-swe-agent version 2.4.1.
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration
+Loading global config from '/home/ofergr/.config/mini-swe-agent/.env'
+minisweagent: INFO: Results will be saved to trajectories                                                                                              
+Logging to 'trajectories/minisweagent.log'
+minisweagent: INFO: Loading dataset princeton-nlp/SWE-Bench_Verified, split test...                                                                    
+minisweagent: INFO: Instance slice: 500 -> 1 instances                                                                                                 
+minisweagent: INFO: Running on 1 instances...                                                                                                          
+minisweagent: INFO: Building agent config from specs:                                                                                                  
+['/home/ofergr/mlops-assignment-e2e-ml-pipeline/.venv/lib/python3.12/site-packages/minisweagent/config/benchmarks/swebench.yaml']                      
+minisweagent.environment: DEBUG: Starting container with command: docker run -d --name minisweagent-a37c2d27 -w /testbed --rm                          
+docker.io/swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest sleep 2h                                                                         
+minisweagent.environment: INFO: Started container minisweagent-a37c2d27 with ID a481a6148e14c10c181ad9571918026d66be3a360f19ad70feaee6b98595ac71       
+minisweagent: INFO: Saved trajectory to 'trajectories/astropy__astropy-12907/astropy__astropy-12907.traj.json'                                         
+  Overall Progress ($0.00) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1/1 100% 0:02:07 eta: 0:00:00
+┏━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Exit Status ┃ Count ┃ Most recent instances                                   ┃
+┡━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Submitted   │     1 │ astropy__astropy-12907                                  │
+└─────────────┴───────┴─────────────────────────────────────────────────────────┘
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
