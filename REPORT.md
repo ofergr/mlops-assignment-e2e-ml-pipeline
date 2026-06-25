@@ -324,13 +324,18 @@ repeatability because it preserves the original artifact directory for compariso
 
 ## Notes
 
-- This submission implements the minimum working pipeline and also includes
-  production-style additions in code:
-  - `dags/evaluate_agent_docker.py`
-  - `docker-compose.yaml`
+- This submission implements the minimum working pipeline and the production-style
+  Docker path.
 - The standalone DAG path (`evaluate-agent`) was validated end-to-end on the VM.
-- The Docker-backed DAG (`evaluate-agent-docker`) was validated end-to-end on the
-  VM with `docker-airflow-real-1`.
+- The Docker-backed DAG path (`evaluate-agent-docker`) is implemented with
+  `DockerOperator` for the agent and evaluation stages.
 - `docker-compose.yaml` deploys Airflow and MLflow for the VM workflow.
-- Remote object storage / S3 artifact upload is not implemented.
-- MLflow logging is implemented with a local file-backed store for development use.
+- `Dockerfile` builds the project execution image used by the DockerOperator tasks.
+- `Dockerfile.airflow` builds the Airflow image with the Docker provider, Docker SDK,
+  MLflow, mini-swe-agent, and SWE-bench dependencies installed ahead of startup.
+- The Docker-backed workflow was validated end-to-end on the VM with the real run
+  `docker-airflow-real-1`.
+- MLflow logging is implemented with a local file-backed store for development use,
+  and the completed run is shown in `screenshots/mlflow_runs.png`.
+- Remote object storage / S3 artifact upload is the only production-style addition
+  from the optional list that is not implemented.
