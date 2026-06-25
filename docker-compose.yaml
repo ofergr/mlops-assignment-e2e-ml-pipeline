@@ -1,6 +1,9 @@
 services:
   airflow:
-    image: apache/airflow:3.0.2-python3.12
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    image: mlops-assignment-airflow:local
     container_name: mlops-assignment-airflow
     user: "0:0"
     restart: unless-stopped
@@ -14,12 +17,6 @@ services:
       MLFLOW_TRACKING_URI: http://mlflow:5000
       PIPELINE_DOCKER_IMAGE: ${PIPELINE_DOCKER_IMAGE:-mlops-assignment-e2e-ml-pipeline:local}
       HOST_PROJECT_ROOT: ${HOST_PROJECT_ROOT}
-      _PIP_ADDITIONAL_REQUIREMENTS: >-
-        apache-airflow-providers-docker
-        docker
-        mlflow
-        mini-swe-agent
-        swebench
     volumes:
       - .:/opt/airflow/project
       - airflow_home:/opt/airflow

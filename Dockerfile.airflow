@@ -1,0 +1,11 @@
+FROM apache/airflow:3.0.2-python3.12
+
+USER airflow
+
+RUN pip install --no-cache-dir \
+    apache-airflow-providers-docker \
+    docker \
+    mlflow \
+    mini-swe-agent \
+    swebench
+
