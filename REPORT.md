@@ -269,6 +269,37 @@ The MLflow store was VM-local runtime state and is intentionally excluded from g
 but `screenshots/mlflow_runs.png` shows the logged params and metrics for the
 completed Docker-backed run.
 
+## Object Storage
+
+The final submission commits the small real run folder directly in git:
+
+- `runs/docker-airflow-real-1/`
+
+This satisfies the reproducibility requirement for the completed `0:1` evaluation
+slice because the run config, predictions, trajectory, evaluation report, metrics,
+manifest, and summary are all present in the repository.
+
+For larger runs, the repository includes an optional Nebius Object Storage upload
+helper. Nebius Object Storage is S3-compatible, so the script uses the standard
+AWS CLI client and AWS-style environment variable names, but the destination is a
+Nebius bucket when `S3_ENDPOINT_URL` points at the Nebius Object Storage endpoint:
+
+```bash
+set -a
+source .env
+set +a
+scripts/upload-run-to-s3.sh docker-airflow-real-1
+```
+
+The script uploads `runs/<run-id>/` to:
+
+```text
+s3://${S3_BUCKET}/${S3_PREFIX}/<run-id>/
+```
+
+Object Storage upload was not used for the final submitted run because the
+validated run artifact folder is small enough to commit directly.
+
 ## Screenshots
 
 Saved evidence in the repository:
@@ -337,5 +368,6 @@ repeatability because it preserves the original artifact directory for compariso
   `docker-airflow-real-1`.
 - MLflow logging is implemented with a local file-backed store for development use,
   and the completed run is shown in `screenshots/mlflow_runs.png`.
-- Remote object storage / S3 artifact upload is the only production-style addition
-  from the optional list that is not implemented.
+- Nebius Object Storage upload is documented and supported by
+  `scripts/upload-run-to-s3.sh` through the S3-compatible API; the submitted run
+  artifacts are committed directly because the final `0:1` run is small.
